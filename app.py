@@ -1,7 +1,11 @@
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever
  
+app = FastAPI()
+
 model = OllamaLLM(model="gemma3")
 
 template = """
@@ -16,12 +20,11 @@ prompt = ChatPromptTemplate.from_template(template)
 
 chain = prompt | model
 
-while True:
-    print("--------------------------------")
-    question = input("Ask me anything: ")
-    if question == "q":
-        break
+class QuestionRequest(BaseModel):
+    question: str
 
-    sections = retriever.invoke(question)
-    result = chain.invoke({"sections": sections, "question": question})
-    print(result)
+@app.post("/ask")
+async def ask(request:QuestionRequest):
+    sections = retriever.invoke(request.question)
+    result = chain.invoke({"sections":sections,"question":request.question})
+    return{"answer":result}
