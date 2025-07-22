@@ -15,9 +15,16 @@ if add_documents:
     ids = []
     
     for i, row in df.iterrows():
+        # Build a more informative document text
+        content_parts = [
+            f"Title: {row['title']}",
+            f"Description: {row['description']}",
+            f"Products: {row['products']}"
+        ]
+        page_content = "\n".join([str(part) for part in content_parts if pd.notnull(part)])
         document = Document(
-            page_content=row["title"] + " " + row["description"],
-            metadata={"products": row["products"]},
+            page_content=page_content,
+            metadata={"products": row["products"], "title": row["title"]},
             id=str(i)
         )
         ids.append(str(i))
