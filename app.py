@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
@@ -9,7 +9,7 @@ app = FastAPI()
 model = OllamaLLM(model="gemma3")
 
 template = """
-You are a helpful assistant which answers in one sentence about the sections, which contain the products.
+You give one sentence answers to the question.
 
 Here is the list of sections: {sections}
 
